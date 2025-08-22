@@ -15,25 +15,35 @@ async function handler(event) {
     try {
         const command = new GetCommand(params);
         const { Item } = await ddb.send(command);
+
         if (Item) {
             return {
                 statusCode: 200,
-                body: JSON.stringify(Item),
-                headers: {'Content-Type': 'application/json'}
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*' // Allow CORS for all origins, replace '*' with specific domain in production
+                },
+                body: JSON.stringify(Item)
             };
         } else {
             return {
                 statusCode: 404,
-                body: JSON.stringify({ message: "No user data found" }),
-                headers: {'Content-Type': 'application/json'}
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                },
+                body: JSON.stringify({ message: "No user data found" })
             };
         }
     } catch (err) {
         console.error("Unable to retrieve data:", err);
         return {
             statusCode: 500,
-            body: JSON.stringify({ message: "Failed to retrieve user data" }),
-            headers: {'Content-Type': 'application/json'}
+            headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            },
+            body: JSON.stringify({ message: "Failed to retrieve user data" })
         };
     }
 }
